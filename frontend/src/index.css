@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --shl-blue: #1a4a9e;
+  --shl-light-blue: #2a6ad2;
+  --shl-dark-blue: #0f2d5e;
+  --shl-gray: #f6f6f6;
+  --shl-dark-gray: #565656;
+}
+
+body {
+  font-family: 'Open Sans', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+}
+
+a {
+  color: var(--shl-blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.shl-btn {
+  background-color: var(--shl-blue);
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.shl-btn:hover {
+  background-color: var(--shl-light-blue);
+}
