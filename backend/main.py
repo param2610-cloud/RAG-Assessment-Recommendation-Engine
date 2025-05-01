@@ -7,14 +7,14 @@ from app.api.endpoints import router as api_router
 from app.services.data import prepare_data_pipeline
 from app.services.search import process_user_query
 
-# Create FastAPI app
+# Created FastAPI app
 app = FastAPI(
     title=API_TITLE,
     description=API_DESCRIPTION,
     version=API_VERSION
 )
 
-# Add CORS middleware
+# Added CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routes
+# Included API routes
 app.include_router(api_router)
 
 def main():
@@ -38,18 +38,18 @@ def main():
     args = parser.parse_args()
     
     if args.prepare:
-        # Prepare data pipeline
+        # Prepared data pipeline
         prepare_data_pipeline(args.prepare, args.db_path)
     elif args.query:
-        # Process user query
+        # Processed user query
         result = process_user_query(args.query, args.db_path)
         print(result)
     elif args.api:
-        # Run as FastAPI server
+        # Ran as FastAPI server
         print("Starting FastAPI server...")
         uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
     else:
-        # Interactive mode
+        
         print("Assessment Recommendation System")
         print("Enter 'exit' to quit")
         while True:

@@ -1,12 +1,29 @@
 import re
-from fastapi import APIRouter, Query as QueryParam
+from fastapi import APIRouter, Query as QueryParam, Body
 from app.api.models import SearchResponse, AssessmentResult
 from app.services.search import search_assessments
 from app.utils.helpers import extract_url_from_query
 from app.services.extraction import extract_job_description
 from app.services.generation import generate_search_query
+from pydantic import BaseModel
+from typing import List
 
 router = APIRouter()
+
+# Define models for recommendation endpoint
+class RecommendationRequest(BaseModel):
+    query: str
+
+class Assessment(BaseModel):
+    url: str
+    adaptive_support: str
+    description: str
+    duration: int
+    remote_support: str
+    test_type: List[str]
+
+class RecommendationResponse(BaseModel):
+    recommended_assessments: List[Assessment]
 
 @router.get("/search", response_model=SearchResponse)
 async def search(
@@ -99,14 +116,62 @@ async def search(
             results=[]
         )
 
+@router.post("/recommend", response_model=RecommendationResponse)
+async def recommend(request: RecommendationRequest):
+    """
+    Recommend assessments based on a job description or natural language query.
+    
+    Returns recommended relevant assessments based on the input query.
+    """
+    query = request.query
+    
+    # Process the query (reusing search logic)
+    is_url = query.startswith(('http://', 'https://'))
+    
+    if is_url:
+        url = query
+        job_description = extract_job_description(url)
+        if job_description.startswith("Error"):
+            return RecommendationResponse(recommended_assessments=[])
+        search_query = generate_search_query(job_description)
+    else:
+        search_query = query
+    
+    try:
+        # Search for assessments
+        results = search_assessments(search_query, persist_directory="database/shl_vector_db")
+        
+        # Format results according to the required response format
+        formatted_results = []
+        for result in results[:10]:  # Limit to 10 results
+            # Extract test types
+            test_types = [t.replace('test_type_', '') for t in result.metadata 
+                        if t.startswith('test_type_') and result.metadata[t]]
+            
+            # Create Assessment object with required format
+            assessment = Assessment(
+                url=result.metadata.get('url', 'N/A'),
+                adaptive_support="Yes" if result.metadata.get('adaptive_support', False) else "No",
+                description=result.page_content[:500],  # Limit description length
+                duration=int(result.metadata.get('duration', 0)),
+                remote_support="Yes" if result.metadata.get('remote_support', False) else "No",
+                test_type=test_types if test_types else ["General"]
+            )
+            formatted_results.append(assessment)
+        
+        # Return the response
+        return RecommendationResponse(recommended_assessments=formatted_results)
+        
+    except Exception as e:
+        # Return empty results on error
+        return RecommendationResponse(recommended_assessments=[])
+
 @router.get("/health")
 async def health_check():
     """
     Health check endpoint to verify the API is running.
-    Returns a simple status message with the API version.
+    Returns a simple status message.
     """
     return {
-        "status": "healthy",
-        "version": "1.0.0",
-        "service": "Assessment Recommendation System API"
+        "status": "healthy"
     }

@@ -1,27 +1,37 @@
-# Deploy FastAPI on Render
+backend/
+├── app/                    # Main application package
+│   ├── __init__.py
+│   ├── api/                # API related modules
+│   │   ├── __init__.py
+│   │   ├── endpoints.py    # FastAPI endpoints
+│   │   └── models.py       # Pydantic models
+│   ├── core/               # Core functionality
+│   │   ├── __init__.py
+│   │   └── config.py       # Configuration settings
+│   ├── services/           # Business logic
+│   │   ├── __init__.py
+│   │   ├── search.py       # Assessment search functionality
+│   │   ├── data.py         # Data processing functions
+│   │   ├── extraction.py   # Job description extraction
+│   │   └── generation.py   # Query generation
+│   └── utils/              # Utility functions
+│       ├── __init__.py
+│       └── helpers.py      # Helper functions
+├── database/               # Keep existing structure
+├── others/                 # Keep existing structure
+├── tests/                  # Add tests folder
+│   ├── __init__.py
+│   └── test_api.py
+├── main.py                 # Simplified entry point
+├── .env
+└── requirements.txt
 
-Use this repo as a template to deploy a Python [FastAPI](https://fastapi.tiangolo.com) service on Render.
 
-See https://render.com/docs/deploy-fastapi or follow the steps below:
+# Run the API server
+python main.py --api
 
-## Manual Steps
+# Process a query
+python main.py --query "personality test for manager position"
 
-1. You may use this repository directly or [create your own repository from this template](https://github.com/render-examples/fastapi/generate) if you'd like to customize the code.
-2. Create a new Web Service on Render.
-3. Specify the URL to your new repository or this repository.
-4. Render will automatically detect that you are deploying a Python service and use `pip` to download the dependencies.
-5. Specify the following as the Start Command.
-
-    ```shell
-    uvicorn main:app --host 0.0.0.0 --port $PORT
-    ```
-
-6. Click Create Web Service.
-
-Or simply click:
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/render-examples/fastapi)
-
-## Thanks
-
-Thanks to [Harish](https://harishgarg.com) for the [inspiration to create a FastAPI quickstart for Render](https://twitter.com/harishkgarg/status/1435084018677010434) and for some sample code!
+# Prepare data pipeline from CSV
+python main.py --prepare assessment.csv

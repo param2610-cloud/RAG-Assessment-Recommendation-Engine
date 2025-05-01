@@ -1,0 +1,99 @@
+graph TD
+    title[SHL Assessment Recommendation System <br> Development Phases]
+    title --> A
+
+    subgraph "1. Project Setup and Structure"
+        A[Initial Configuration] --> A1[Backend Structure <br> Python + FastAPI]
+        A --> A2[Frontend Setup <br> React + TypeScript + Vite + Tailwind]
+        A --> A3[Directory Organization <br> Modular Design]
+        A --> A4[Environment Setup <br> .env Configuration]
+    end
+
+    subgraph "2. Data Preparation Pipeline"
+        B[Data Processing] --> B1[Assessment Data Collection]
+        B1 --> B2[Data Cleaning & Validation]
+        B2 --> B3[Document Preparation]
+        B3 --> B4[Test Type Categorization]
+        B4 --> B5[Metadata Enrichment <br> Job Levels, Languages, etc.]
+    end
+
+    subgraph "3. Vector Database Implementation"
+        C[Vector Store] --> C1[Chroma DB Integration]
+        C1 --> C2[Google Generative AI Embedding Model]
+        C2 --> C3[Vector Database Schema Design]
+        C3 --> C4[Vector Database Persistence]
+        C4 --> C5[Database Rebuild/Update Process]
+    end
+
+    subgraph "4. Search Service Development"
+        D[Search Functionality] --> D1[Natural Language Query Processing]
+        D1 --> D2[Job Description URL Extraction]
+        D2 --> D3[Query Generation from Job Descriptions]
+        D3 --> D4[Vector Similarity Search]
+        D4 --> D5[Result Filtering & Ranking]
+        D5 --> D6[Duration & Test Type Constraints]
+    end
+
+    subgraph "5. API Development"
+        E[API Implementation] --> E1[FastAPI Endpoints]
+        E1 --> E2[Parameter Validation & Models]
+        E2 --> E3[CORS Configuration]
+        E3 --> E4[Response Models & Formatting]
+        E4 --> E5[Error Handling & Logging]
+    end
+
+    subgraph "6. Frontend Implementation"
+        F[User Interface] --> F1[Responsive UI Design]
+        F1 --> F2[Search Form Component]
+        F2 --> F3[Result Table Display]
+        F3 --> F4[Loading States & Error Handling]
+        F4 --> F5[Assessment Detail Display]
+        F5 --> F6[Layout & Accessibility]
+    end
+
+    subgraph "7. Command Line Interface"
+        G[CLI Development] --> G1[FastAPI Server Mode]
+        G1 --> G2[Query Processing Mode]
+        G2 --> G3[Data Preparation Mode]
+        G3 --> G4[Interactive Mode]
+        G4 --> G5[Admin Commands]
+    end
+
+    subgraph "8. Testing"
+        H[Testing Strategy] --> H1[Unit Testing <br> Core Functions]
+        H1 --> H2[API Endpoint Testing]
+        H2 --> H3[Frontend Component Testing]
+        H3 --> H4[Integration Testing]
+        H4 --> H5[Performance Testing <br> Search Response Time]
+    end
+
+    subgraph "9. Security & Configuration"
+        I[Security Implementation] --> I1[Environment Variables]
+        I1 --> I2[API Key Management]
+        I2 --> I3[Centralized Configuration]
+        I3 --> I4[Data Validation]
+    end
+
+    subgraph "10. Deployment & CI/CD"
+        J[Deployment Process] --> J1[Backend Deployment <br> Python Service]
+        J1 --> J2[Frontend Deployment <br> Static Site]
+        J2 --> J3[Database Setup <br> Vector DB]
+        J3 --> J4[Continuous Integration]
+        J4 --> J5[Monitoring & Updates]
+    end
+
+    A3 --> B
+    B5 --> C
+    C5 --> D
+    D6 --> E
+    E5 --> F
+    E5 --> G
+    F --> H
+    G --> H
+    H5 --> I
+    I4 --> J
+
+    classDef phase fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef title fill:#1a4a9e,color:#fff,stroke:#333,stroke-width:2px,font-weight:bold;
+    class A,B,C,D,E,F,G,H,I,J phase;
+    class title title;
