@@ -18,6 +18,7 @@
 - [External Interface Requirements](#external-interface-requirements)
 - [System Architecture](#system-architecture)
 - [Constraints and Limitations](#constraints-and-limitations)
+- [Optimization Efforts](OPTIMIZATION.md)
 - [Appendices](#appendices)
 
 ## 🚀 Introduction
@@ -259,10 +260,3 @@ Assessment data includes:
 | Version control | Git |
 | Package management | npm (frontend), pip (backend) |
 
----
-
-<p align="center">
-  <img src="https://placekitten.com/100/30" alt="SHL Logo" width="100">
-  <br>
-  <small>© 2023 SHL Group. All rights reserved.</small>
-</p>
