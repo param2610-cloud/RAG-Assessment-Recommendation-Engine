@@ -5,6 +5,7 @@ import requests
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from typing import Dict, Any, List, Optional
+from dotenv import load_dotenv  # Add this import
 from langchain_core.documents import Document
 from langchain_google_genai import GoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
@@ -12,13 +13,14 @@ from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+load_dotenv()  # Add this line
 
 app = FastAPI(title="Assessment Recommendation System API", 
               description="API for searching and recommending SHL assessments",
               version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://shl-recommendation-engine.vercel.app"],  # Allow specific origin
+    allow_origins=["https://assessment-recommendation-engine.vercel.app","https://shl-recommendation-engine.vercel.app","http://localhost:3000"],  # Allow specific origin
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
@@ -358,7 +360,7 @@ def generate_search_query(job_description):
     response = model.invoke(prompt)
     return response.strip()
 
-def search_assessments(query, persist_directory="../shl_optimized_vector_db"):
+def search_assessments(query, persist_directory="database/shl_vector_db"):
     """Search for assessments based on the query."""
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     
