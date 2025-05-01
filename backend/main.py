@@ -639,6 +639,18 @@ async def search(
             results=[]
         )
 
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint to verify the API is running.
+    Returns a simple status message with the API version.
+    """
+    return {
+        "status": "healthy",
+        "version": app.version,
+        "service": app.title
+    }
+
 def main():
     """Main function to handle command line arguments and run the program."""
     import argparse
