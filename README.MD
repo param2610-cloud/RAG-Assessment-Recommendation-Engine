@@ -1,10 +1,10 @@
-# 🧩 SHL Assessment Recommendation System
+# 🧩 Smart Assessment Recommendation System
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
 
 <p align="center">
-  <img src="https://placekitten.com/800/200" alt="SHL Assessment Recommendation System" width="800">
+  <img src="https://placekitten.com/800/200" alt="Assessment Recommendation System" width="800">
   <br>
   <em>AI-powered assessment recommendation tool for HR professionals and recruiters</em>
 </p>
@@ -24,26 +24,25 @@
 ## 🚀 Introduction
 
 ### Purpose
-This Software Requirements Specification (SRS) document describes the requirements for the SHL Assessment Recommendation System, a web application designed to help HR professionals and recruiters find appropriate SHL assessments based on job descriptions or specific requirements.
+This Software Requirements Specification (SRS) document describes the requirements for the Assessment Recommendation System, a web application designed to help HR professionals and recruiters find appropriate assessment tools based on job descriptions or specific requirements.
 
 ### Scope
-The SHL Assessment Recommendation System is an AI-powered tool that:
+The Assessment Recommendation System is an AI-powered tool that:
 
-- Recommends suitable assessment tests from SHL's catalog
+- Recommends suitable assessment tests from a comprehensive catalog
 - Processes both natural language queries and job description URLs
 - Provides detailed information about recommended assessments
 - Allows for filtering and customization of search results
 
 ### Intended Audience
 - Development team
-- SHL stakeholders
+- Stakeholders
 - QA and testing team
 - System administrators and maintainers
 
 ### Definitions and Acronyms
 | Term | Definition |
 |------|------------|
-| SHL | A global provider of talent assessment solutions |
 | IRT | Item Response Theory, an adaptive testing methodology |
 | API | Application Programming Interface |
 | UI | User Interface |
@@ -52,7 +51,7 @@ The SHL Assessment Recommendation System is an AI-powered tool that:
 ## 🔍 System Description
 
 ### System Context
-The system serves as an intermediary between users (HR professionals/recruiters) and SHL's assessment catalog. It processes user requirements and matches them to appropriate assessment tests using natural language processing and vector search technologies.
+The system serves as an intermediary between users (HR professionals/recruiters) and assessment catalogs. It processes user requirements and matches them to appropriate assessment tests using natural language processing and vector search technologies.
 
 ### Product Features
 - 📋 Job description analysis
@@ -64,7 +63,7 @@ The system serves as an intermediary between users (HR professionals/recruiters)
 
 ### User Classes and Characteristics
 - **Primary Users**: HR professionals and recruiters seeking appropriate assessment tools
-- **Secondary Users**: SHL administrators and content managers
+- **Secondary Users**: Administrators and content managers
 - **User Experience Level**: Basic technical knowledge, familiarity with recruitment tools
 
 ## ⚙️ Functional Requirements
@@ -115,7 +114,7 @@ The system serves as an intermediary between users (HR professionals/recruiters)
 - NFR-3.2: The system shall provide helpful error messages in user-friendly language
 - NFR-3.3: The system shall provide sample queries to guide users
 - NFR-3.4: The system shall be compatible with mobile and desktop browsers
-- NFR-3.5: The system shall follow SHL brand guidelines for visual design
+- NFR-3.5: The system shall follow brand-neutral guidelines for visual design
 
 ### Reliability
 - NFR-4.1: The system shall be available 99.9% of the time
@@ -167,7 +166,7 @@ The system shall support the following test type categories:
 
 ### User Interfaces
 - IR-1.1: The web interface shall be responsive and work on various screen sizes
-- IR-1.2: The system shall implement SHL's brand colors and styling
+- IR-1.2: The system shall implement brand-neutral styling
 - IR-1.3: The interface shall provide clear feedback during operations
 - IR-1.4: The interface shall display assessment details in a clear, tabular format
 
@@ -182,7 +181,7 @@ The system shall support the following test type categories:
   - max_results: Integer (optional, default: 5)
 
 ### External Services
-- IR-3.1: The system shall connect to Google Generative AI for embeddings
+- IR-3.1: The system shall connect to AI services for embeddings
 - IR-3.2: The system shall use appropriate HTTP libraries for URL scraping
 - IR-3.3: The system shall handle external service failures gracefully
 
@@ -202,7 +201,7 @@ The system shall support the following test type categories:
 ### Backend
 - Built with Python using FastAPI framework
 - Implements vector search using Chroma database
-- Uses Google Generative AI for embeddings
+- Uses AI services for embeddings
 - Modules:
   - API endpoints
   - Data processing
@@ -224,8 +223,8 @@ The system shall support the following test type categories:
 - CL-1.4: The backend services must run in a Python environment
 
 ### Business Constraints
-- CL-2.1: The system must comply with SHL's branding guidelines
-- CL-2.2: The system must accurately represent SHL's assessment catalog
+- CL-2.1: The system must comply with brand-neutral guidelines
+- CL-2.2: The system must accurately represent the assessment catalog
 - CL-2.3: The system should be maintainable for future assessment updates
 
 ## 📎 Appendices

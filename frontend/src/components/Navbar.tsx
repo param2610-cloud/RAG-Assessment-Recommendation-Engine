@@ -9,31 +9,29 @@ const Navbar: React.FC = () => {
             <div className="flex-shrink-0">
               <img
                 className="h-8 w-auto"
-                src="/shl-logo.png"
-                alt="SHL Logo"
+                src="/logo.png"
+                alt="Logo"
                 onError={(e) => {
-                  // Fallback if image doesn't load
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
                   target.style.display = 'none';
                 }}
               />
-              {/* Text logo fallback */}
-              <span className="text-[#1a4a9e] font-bold text-xl ml-2">SHL Assessment Recommender</span>
+              <span className="text-blue-600 font-bold text-xl ml-2">Assessment Recommender</span>
             </div>
           </div>
           <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-            <a href="https://www.shl.com" target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1a4a9e]">
+            <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600">
               Home
             </a>
-            <a href="https://www.shl.com/solutions/" target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1a4a9e]">
-              Solutions
+            <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600">
+              About
             </a>
-            <a href="https://www.shl.com/solutions/products/" target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1a4a9e]">
-              Products
+            <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600">
+              Features
             </a>
-            <a href="https://www.shl.com/solutions/products/product-catalog/" target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-[#1a4a9e] rounded">
-              Product Catalog
+            <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-blue-600 rounded">
+              Documentation
             </a>
           </div>
         </div>

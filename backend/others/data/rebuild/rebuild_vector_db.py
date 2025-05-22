@@ -11,7 +11,7 @@ dotenv.load_dotenv()
 
 # Setup paths
 DATA_PATH = "./assessment_details_cleaned.csv"
-OUTPUT_PATH = "../data/shl_optimized_vector_db_new"
+OUTPUT_PATH = "../data/optimized_vector_db_new"
 
 def clean_list_field(field):
     """Clean list fields that might be string representations of lists or comma-separated strings"""

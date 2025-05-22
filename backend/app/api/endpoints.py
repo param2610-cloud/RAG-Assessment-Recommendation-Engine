@@ -78,7 +78,7 @@ async def search(
     
     try:
         # Search for assessments using existing function
-        results = search_assessments(search_query, persist_directory="database/shl_vector_db")
+        results = search_assessments(search_query, persist_directory="database/vector_db")
         
         # Format results according to the response model
         formatted_results = []
@@ -139,7 +139,7 @@ async def recommend(request: RecommendationRequest):
     
     try:
         # Search for assessments
-        results = search_assessments(search_query, persist_directory="database/shl_vector_db")
+        results = search_assessments(search_query, persist_directory="database/vector_db")
         
         # Format results according to the required response format
         formatted_results = []

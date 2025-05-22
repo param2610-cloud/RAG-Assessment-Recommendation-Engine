@@ -6,11 +6,11 @@ load_dotenv()
 
 # API settings
 API_TITLE = "Assessment Recommendation System API"
-API_DESCRIPTION = "API for searching and recommending SHL assessments"
+API_DESCRIPTION = "API for searching and recommending assessments"
 API_VERSION = "1.0.0"
 
 # Database settings
-DB_PATH = os.getenv("DB_PATH", "database/shl_vector_db")
+DB_PATH = os.getenv("DB_PATH", "database/vector_db")
 
 # CORS settings
 CORS_ORIGINS = [

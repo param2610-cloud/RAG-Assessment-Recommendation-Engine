@@ -5,7 +5,7 @@ from app.utils.helpers import extract_filters_from_query, extract_url_from_query
 from app.services.extraction import extract_job_description
 from app.services.generation import generate_search_query
 
-def search_assessments(query, persist_directory="database/shl_vector_db"):
+def search_assessments(query, persist_directory="database/vector_db"):
     """Search for assessments based on the query."""
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     
@@ -51,7 +51,7 @@ def search_assessments(query, persist_directory="database/shl_vector_db"):
     
     return filtered_results
 
-def process_user_query(user_query, persist_directory="database/shl_vector_db"):
+def process_user_query(user_query, persist_directory="database/vector_db"):
     """Process user query with URL to extract job description and search for assessments."""
     # Extract URL from query
     url = extract_url_from_query(user_query)

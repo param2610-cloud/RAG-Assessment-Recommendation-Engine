@@ -31,7 +31,7 @@ def main():
     parser = argparse.ArgumentParser(description='Assessment Recommendation System')
     parser.add_argument('--prepare', type=str, help='Path to CSV file to prepare data pipeline')
     parser.add_argument('--query', type=str, help='Query string for assessment search')
-    parser.add_argument('--db_path', type=str, default="database/shl_vector_db", 
+    parser.add_argument('--db_path', type=str, default="database/vector_db", 
                       help='Path to the vector database directory')
     parser.add_argument('--api', action='store_true', help='Run as FastAPI server')
     

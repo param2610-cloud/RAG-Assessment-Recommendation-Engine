@@ -71,6 +71,13 @@ def prepare_documents(df):
         )
         
         # Basic metadata
+        # Basic properties (name, URL, description, duration)
+        # Boolean flags for capabilities (remote_testing, adaptive_irt)
+        # Duration categorization (duration_under_30, duration_under_45, etc.)
+        # Dynamic job level indicators (job_level_entry, job_level_manager, etc.)
+        # Language availability flags (language_english, language_spanish, etc.)
+        # Test type indicators (test_type_A, test_type_B, etc.)
+        # Higher-level category flags (contains_cognitive, contains_personality, etc.)
         metadata = {
             "name": str(row['name']),
             "url": str(row['url']),
@@ -121,7 +128,7 @@ def prepare_documents(df):
     
     return documents
 
-def prepare_data_pipeline(df_path, persist_directory="database/shl_vector_db"):
+def prepare_data_pipeline(df_path, persist_directory="database/vector_db"):
     """Prepare the data pipeline from CSV to vector database."""
     # Load the dataframe
     print(f"Loading data from {df_path}...")

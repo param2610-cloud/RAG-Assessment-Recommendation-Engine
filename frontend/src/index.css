@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --shl-blue: #1a4a9e;
-  --shl-light-blue: #2a6ad2;
-  --shl-dark-blue: #0f2d5e;
-  --shl-gray: #f6f6f6;
-  --shl-dark-gray: #565656;
+  --primary-blue: #2563eb;
+  --primary-light-blue: #3b82f6;
+  --primary-dark-blue: #1d4ed8;
+  --neutral-gray: #f6f6f6;
+  --neutral-dark-gray: #565656;
 }
 
 body {
@@ -14,7 +14,7 @@ body {
 }
 
 a {
-  color: var(--shl-blue);
+  color: var(--primary-blue);
   text-decoration: none;
 }
 
@@ -22,12 +22,12 @@ a:hover {
   text-decoration: underline;
 }
 
-.shl-btn {
-  background-color: var(--shl-blue);
+.primary-btn {
+  background-color: var(--primary-blue);
   color: white;
   transition: background-color 0.3s;
 }
 
-.shl-btn:hover {
-  background-color: var(--shl-light-blue);
+.primary-btn:hover {
+  background-color: var(--primary-light-blue);
 }
