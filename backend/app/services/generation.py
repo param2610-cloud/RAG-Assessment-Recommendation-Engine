@@ -1,4 +1,8 @@
+import logging
+import os
 from langchain_google_genai import GoogleGenerativeAI
+
+logger = logging.getLogger(__name__)
 
 def generate_search_query(job_description):
     """Generate a search query based on job description using Gemini."""
@@ -18,6 +22,24 @@ def generate_search_query(job_description):
     Return ONLY the search query, nothing else.
     """
     
-    model = GoogleGenerativeAI(model="gemini-2.5-pro-exp-03-25")
-    response = model.invoke(prompt)
-    return response.strip()
+    api_key_present = bool(os.getenv("GOOGLE_API_KEY"))
+    logger.debug("Invoking Gemini to generate search query", extra={
+        "model": "gemini-2.5-pro-exp-03-25",
+        "api_key_present": api_key_present,
+        "job_description_length": len(job_description) if job_description else 0
+    })
+
+    try:
+        model = GoogleGenerativeAI(model="gemini-2.5-pro-exp-03-25")
+        response = model.invoke(prompt)
+        cleaned_response = response.strip() if isinstance(response, str) else str(response)
+        logger.debug("Gemini response received", extra={
+            "response_preview": cleaned_response[:200]
+        })
+        return cleaned_response
+    except Exception as exc:
+        logger.exception("Gemini query generation failed", extra={
+            "model": "gemini-2.5-pro-exp-03-25",
+            "api_key_present": api_key_present
+        })
+        raise

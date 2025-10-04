@@ -1,0 +1,6 @@
+# Exclude local development environments and caches from uploads
+backend/shl_env/
+frontend/node_modules/
+**/__pycache__/
+.pytest_cache/
+frontend/.vite/

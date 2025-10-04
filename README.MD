@@ -1,261 +1,355 @@
+<div align="center">
+
 # 🧩 Smart Assessment Recommendation System
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
+![CI](https://img.shields.io/badge/tests-manual-lightgrey)
 
-<p align="center">
-  <img src="https://placekitten.com/800/200" alt="Assessment Recommendation System" width="800">
-  <br>
-  <em>AI-powered assessment recommendation tool for HR professionals and recruiters</em>
-</p>
+AI-powered assessment recommendations that connect hiring teams with the right SHL evaluations in seconds.
 
-## 📑 Table of Contents
-- [Introduction](#introduction)
-- [System Description](#system-description)
-- [Functional Requirements](#functional-requirements)
-- [Non-Functional Requirements](#non-functional-requirements)
-- [Data Requirements](#data-requirements)
-- [External Interface Requirements](#external-interface-requirements)
-- [System Architecture](#system-architecture)
-- [Constraints and Limitations](#constraints-and-limitations)
-- [Optimization Efforts](OPTIMIZATION.md)
-- [Appendices](#appendices)
+</div>
 
-## 🚀 Introduction
+---
 
-### Purpose
-This Software Requirements Specification (SRS) document describes the requirements for the Assessment Recommendation System, a web application designed to help HR professionals and recruiters find appropriate assessment tools based on job descriptions or specific requirements.
+## 🧭 Quick Links
 
-### Scope
-The Assessment Recommendation System is an AI-powered tool that:
+- [System Overview](#-system-overview)
+- [Architecture](#-architecture)
+- [Getting Started](#-getting-started)
+- [REST API Reference](#-rest-api-reference)
+- [Data & Vector Store](#-data--vector-store)
+- [Benchmarking & Quality](#-benchmarking--quality)
+- [Deployment](#-deployment)
+- [Additional Documents](#-additional-documents)
 
-- Recommends suitable assessment tests from a comprehensive catalog
-- Processes both natural language queries and job description URLs
-- Provides detailed information about recommended assessments
-- Allows for filtering and customization of search results
+---
 
-### Intended Audience
-- Development team
-- Stakeholders
-- QA and testing team
-- System administrators and maintainers
+## 🌟 System Overview
 
-### Definitions and Acronyms
-| Term | Definition |
-|------|------------|
-| IRT | Item Response Theory, an adaptive testing methodology |
-| API | Application Programming Interface |
-| UI | User Interface |
-| SRS | Software Requirements Specification |
+The Assessment Recommendation System ingests HR job requirements—either as free-form text or job description URLs—and returns the most relevant SHL assessments. Behind the scenes the platform combines:
 
-## 🔍 System Description
+- 🌐 A FastAPI backend that orchestrates extraction, enrichment, and semantic search
+- 🔍 A Chroma vector database populated from curated SHL catalog data
+- 🤖 Google Gemini (Generative AI) for query rewriting and embeddings
+- 🖥️ A responsive React/Vite frontend for recruiters and talent partners
 
-### System Context
-The system serves as an intermediary between users (HR professionals/recruiters) and assessment catalogs. It processes user requirements and matches them to appropriate assessment tests using natural language processing and vector search technologies.
+Use it to quickly tailor assessment bundles by role seniority, skills, duration constraints, or delivery preferences (remote vs. on-site, adaptive IRT, and more).
 
-### Product Features
-- 📋 Job description analysis
-- 💬 Natural language query processing
-- 🤖 AI-powered assessment recommendations
-- 📊 Detailed assessment information display
-- 🔗 URL parsing for job descriptions
-- ⚙️ Customizable search parameters
+### Feature Highlights
 
-### User Classes and Characteristics
-- **Primary Users**: HR professionals and recruiters seeking appropriate assessment tools
-- **Secondary Users**: Administrators and content managers
-- **User Experience Level**: Basic technical knowledge, familiarity with recruitment tools
+- Dual input mode: natural language text or job URL scraping
+- Filter-aware search that understands duration, job level, skills, and delivery attributes
+- Clear results table with deep links to SHL product pages
+- Sample prompts and helpful feedback states for end-users
+- Benchmark suite to track retrieval quality over time
 
-## ⚙️ Functional Requirements
+---
 
-### User Interface
-- FR-1.1: The system shall provide a clean, responsive web interface
-- FR-1.2: The system shall include a search form for entering requirements
-- FR-1.3: The system shall include a toggle for URL/text-based input
-- FR-1.4: The system shall provide sample queries for user guidance
-- FR-1.5: The system shall provide a results table displaying assessment details
-- FR-1.6: The system shall allow users to specify the maximum number of results (1-10)
-- FR-1.7: The system shall display loading indicators during processing
+## 🗂️ Repository Layout
 
-### Search Functionality
-- FR-2.1: The system shall process natural language queries about job requirements
-- FR-2.2: The system shall extract job descriptions from provided URLs
-- FR-2.3: The system shall generate search queries from extracted job descriptions
-- FR-2.4: The system shall detect time constraints in user queries
-- FR-2.5: The system shall match query requirements to appropriate assessment types
-- FR-2.6: The system shall return error messages for invalid URLs or failed searches
-- FR-2.7: The system shall provide feedback when no matching assessments are found
+```
+.
+├── backend/
+│   ├── app/                # FastAPI application modules
+│   ├── database/vector_db  # Persisted Chroma store
+│   ├── scripts/            # Tooling (benchmarks, utilities)
+│   ├── assessment.csv      # Source catalog snapshot
+│   ├── requirements.txt    # Python dependencies
+│   └── render.yaml         # Render deployment blueprint
+├── frontend/
+│   ├── src/                # React components & types
+│   ├── public/             # Static assets
+│   └── package.json        # Frontend dependencies & scripts
+├── docs/
+│   └── SRS.md              # Full Software Requirements Specification
+├── OPTIMIZATION.md         # Notes on performance improvements
+└── Dev-Phase-outline.mermaid
+```
 
-### Assessment Recommendations
-- FR-3.1: The system shall recommend assessments based on job roles and levels
-- FR-3.2: The system shall recommend assessments based on required skills/languages
-- FR-3.3: The system shall recommend assessments based on required assessment types
-- FR-3.4: The system shall consider duration constraints in recommendations
-- FR-3.5: The system shall provide information about remote testing availability
-- FR-3.6: The system shall provide information about adaptive testing capabilities
-- FR-3.7: The system shall rank recommendations by relevance to the query
+---
 
-## 🔒 Non-Functional Requirements
+## 🏛 Architecture
 
-### Performance
-- NFR-1.1: The system shall return search results within 5 seconds for direct queries
-- NFR-1.2: The system shall process URL inputs and return results within 10 seconds
-- NFR-1.3: The system shall handle up to 100 concurrent users
-- NFR-1.4: The database operations shall support fast vector similarity search
+```mermaid
+flowchart LR
+    subgraph Client
+        UI[React + Tailwind UI]
+    end
+    subgraph API[FastAPI]
+        Search[Search Endpoint]
+        Recommend[Recommend Endpoint]
+        Extract[URL Extraction]
+        Generate[Query Generation]
+    end
+    subgraph Data
+        CSV[(assessment.csv)]
+        VectorDB[(Chroma Vector Store)]
+    end
+    Gemini[(Gemini Models)]
 
-### Security
-- NFR-2.1: The system shall sanitize all user inputs to prevent injection attacks
-- NFR-2.2: The API endpoints shall validate request parameters
-- NFR-2.3: The system shall implement appropriate CORS protections
-- NFR-2.4: External API credentials shall be stored securely using environment variables
+    UI -->|REST| Search
+    UI -->|REST| Recommend
+    Search -->|Langchain| VectorDB
+    Recommend -->|Langchain| VectorDB
+    Extract -->|HTTP| URL[Job Listing]
+    Generate --> Gemini
+    CSV -->|prepare_data_pipeline| VectorDB
+```
 
-### Usability
-- NFR-3.1: The user interface shall be intuitive and require minimal training
-- NFR-3.2: The system shall provide helpful error messages in user-friendly language
-- NFR-3.3: The system shall provide sample queries to guide users
-- NFR-3.4: The system shall be compatible with mobile and desktop browsers
-- NFR-3.5: The system shall follow brand-neutral guidelines for visual design
+### Key Components
 
-### Reliability
-- NFR-4.1: The system shall be available 99.9% of the time
-- NFR-4.2: The system shall gracefully handle network failures
-- NFR-4.3: The system shall implement appropriate error handling and logging
+- **Frontend (React + TypeScript)**: Collects user requirements, calls the backend, and renders tabular recommendations with supporting metadata.
+- **Backend (FastAPI + LangChain)**: Routes incoming queries through extraction (`BeautifulSoup`), query generation (Gemini), and semantic retrieval (Chroma + GoogleEmbeddings).
+- **Vector Store (Chroma DB)**: Stores assessment embeddings enriched with detailed metadata for filtering (job levels, languages, test types, delivery modes, etc.).
+- **Benchmarks & Evaluation**: `backend/scripts/benchmark.py` computes Recall@K and MAP@K for curated scenarios.
 
-### Scalability
-- NFR-5.1: The system shall support future growth of the assessment catalog
-- NFR-5.2: The backend shall be designed for horizontal scaling
-- NFR-5.3: The database shall efficiently handle increasing vector data
+---
 
-## 💾 Data Requirements
+## 🚀 Getting Started
 
-### Assessment Data Model
-Each assessment shall contain:
-- Name
-- URL
-- Description
-- Job levels (array)
-- Languages (array)
-- Duration (minutes)
-- Test types (array)
-- Remote testing availability (boolean)
-- Adaptive IRT availability (boolean)
+### Prerequisites
 
-### Test Type Categories
-The system shall support the following test type categories:
-- A: Ability & Aptitude
-- B: Biodata & Situational Judgment
-- C: Competencies
-- D: Development and 360
-- E: Assessment Exercises
-- K: Knowledge & Skills
-- P: Personality & Behavior
-- S: Simulation
+- Python 3.11+
+- Node.js 20+ (tested with Vite 6)
+- npm 10+
+- Google Gemini API access (`GOOGLE_API_KEY`)
 
-### Vector Database
-- DR-3.1: The system shall store assessment data in a vector database
-- DR-3.2: Each assessment shall have associated metadata for filtering
-- DR-3.3: Each assessment shall have embeddings for semantic search
+### 1. Clone & bootstrap (once per machine)
 
-### Data Processing
-- DR-4.1: The system shall clean and validate incoming assessment data
-- DR-4.2: The system shall convert string representations to appropriate data types
-- DR-4.3: The system shall handle missing or null values appropriately
-- DR-4.4: The system shall standardize data formatting
+```powershell
+git clone https://github.com/param2610-cloud/Assessment-Recommendation-Engine.git
+cd Assessment-Recommendation-Engine
+```
 
-## 🌐 External Interface Requirements
+### 2. Backend setup (`backend/`)
 
-### User Interfaces
-- IR-1.1: The web interface shall be responsive and work on various screen sizes
-- IR-1.2: The system shall implement brand-neutral styling
-- IR-1.3: The interface shall provide clear feedback during operations
-- IR-1.4: The interface shall display assessment details in a clear, tabular format
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+Copy-Item .env.example .env  # then add your GOOGLE_API_KEY
+python main.py --prepare assessment.csv  # builds/refreshes the Chroma store
+python main.py --api  # starts FastAPI on http://127.0.0.1:8000
+```
 
-### API Interfaces
-- IR-2.1: The backend shall expose a RESTful API for the frontend
-- IR-2.2: The API shall support the following endpoints:
-  - GET /search: Search for assessments
-  - GET /health: Check system health
-- IR-2.3: The search endpoint shall accept the following parameters:
-  - query: String (required)
-  - is_url: Boolean (optional, default: false)
-  - max_results: Integer (optional, default: 5)
+> The preparation step can take several minutes the first time because embeddings are created for each catalog item.
 
-### External Services
-- IR-3.1: The system shall connect to AI services for embeddings
-- IR-3.2: The system shall use appropriate HTTP libraries for URL scraping
-- IR-3.3: The system shall handle external service failures gracefully
+### 3. Frontend setup (`frontend/`)
 
-## 🏗️ System Architecture
+```powershell
+cd ..\frontend
+npm install
+Copy-Item .env.example .env.local  # optional, or set VITE_BACKEND_DOMAIN directly
+npm run dev
+```
 
-### Frontend
-- Built with React and TypeScript
-- Implements responsive design using Tailwind CSS
-- Communicates with backend via RESTful API calls
-- Components:
-  - Search form for input
-  - Results display table
-  - Loading indicators
-  - Error messages
-  - Navigation components
+Set `VITE_BACKEND_DOMAIN` to your backend base URL (e.g. `http://127.0.0.1:8000`).
 
-### Backend
-- Built with Python using FastAPI framework
-- Implements vector search using Chroma database
-- Uses AI services for embeddings
-- Modules:
-  - API endpoints
-  - Data processing
-  - Search services
-  - Job description extraction
-  - Query generation
+### 4. Running the stack
 
-### Database
-- Uses Chroma vector database for storing assessment data
-- Stores both vector embeddings and metadata for filtering
-- Supports similarity search and metadata filtering
+1. Launch the backend API (`python main.py --api`).
+2. In a second terminal, start the Vite dev server (`npm run dev`).
+3. Open `http://localhost:5173` (default Vite port) and begin querying.
 
-## ⚠️ Constraints and Limitations
+---
 
-### Technical Constraints
-- CL-1.1: The system must be compatible with modern web browsers
-- CL-1.2: The system depends on external AI services for embeddings
-- CL-1.3: The system requires internet connectivity for URL processing
-- CL-1.4: The backend services must run in a Python environment
+## 🔐 Configuration
 
-### Business Constraints
-- CL-2.1: The system must comply with brand-neutral guidelines
-- CL-2.2: The system must accurately represent the assessment catalog
-- CL-2.3: The system should be maintainable for future assessment updates
+| Component | Variable | Description |
+|-----------|----------|-------------|
+| Backend | `GOOGLE_API_KEY` | Required. Grants access to Gemini embeddings and generative models. |
+| Backend | `DB_PATH` | Optional. Overrides the Chroma persistence directory (`database/vector_db` by default). |
+| Frontend | `VITE_BACKEND_DOMAIN` | Required in development/deployment. REST base URL (e.g., `https://api.example.com`). |
 
-## 📎 Appendices
+Create environment files from the provided templates:
 
-### Data Schema
-Assessment data includes:
+- `backend/.env.example`
+- `frontend/.env.example`
+
+Do **not** commit populated `.env` files.
+
+---
+
+## 📡 REST API Reference
+
+Base URL defaults to `http://127.0.0.1:8000` in development.
+
+### `GET /health`
+
+Returns API readiness.
+
 ```json
 {
-  "name": "string",
-  "url": "string",
-  "description": "string",
-  "job_levels": ["string"],
-  "languages": ["string"],
-  "duration": "number",
-  "test_type": ["string"],
-  "remote_testing": "boolean",
-  "adaptive_irt": "boolean"
+  "status": "healthy"
 }
 ```
 
-### Deployment Requirements
-- **Frontend**: Node.js environment for React application
-- **Backend**: Python 3.x environment with required dependencies
-- **Database**: Storage system supporting Chroma vector database
-- **Environment variables** for API keys and service configuration
+### `GET /search`
 
-### Development Environment
-| Component | Technologies |
-|-----------|--------------|
-| Frontend | Vite, React, TypeScript, Tailwind CSS |
-| Backend | Python, FastAPI, Langchain, BeautifulSoup |
-| Version control | Git |
-| Package management | npm (frontend), pip (backend) |
+Search the catalog with a direct query or job URL.
+
+| Query Param | Type | Required | Notes |
+|-------------|------|----------|-------|
+| `query` | string | ✅ | Natural language text or job listing URL |
+| `is_url` | boolean | ❌ (default `false`) | Set when `query` is a URL; triggers scraping + query generation |
+| `max_results` | integer | ❌ (default `5`, min `1`, max `10`) | Limits returned assessments |
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "search_query": "Leadership assessment for senior managers focused on strategic thinking",
+  "original_query": "Leadership assessments for senior management",
+  "is_url": false,
+  "results": [
+    {
+      "name": "Leadership Compass",
+      "url": "https://www.shl.com/solutions/products/product-catalog/leadership-compass/",
+      "description": "Leadership Compass: A comprehensive leadership capability diagnostic...",
+      "duration": 45.0,
+      "test_types": ["P", "C"]
+    }
+  ]
+}
+```
+
+</details>
+
+### `POST /recommend`
+
+Body:
+
+```json
+{
+  "query": "software developer python skills"
+}
+```
+
+Response:
+
+```json
+{
+  "recommended_assessments": [
+    {
+      "url": "https://www.shl.com/.../coding-essentials-python/",
+      "adaptive_support": "No",
+      "description": "Coding Essentials Python assessment...",
+      "duration": 45,
+      "remote_support": "Yes",
+      "test_type": ["K", "A"]
+    }
+  ]
+}
+```
+
+Use this endpoint when you only need lightweight recommendation data (no titles/metadata beyond what the frontend shows).
+
+---
+
+## 🧮 Data & Vector Store
+
+### Source Catalog (`backend/assessment.csv`)
+
+Primary fields:
+
+- `name`, `url`, `description`
+- `job_levels`, `languages`, `test_type` (list-like columns cleaned via `clean_list_field`)
+- `duration` (minutes)
+- `remote_testing`, `adaptive_irt` (booleans)
+
+### Preparing embeddings
+
+`python main.py --prepare assessment.csv`
+
+- Normalizes list fields
+- Adds rich metadata flags (job level, language, test type categories, duration buckets)
+- Generates embeddings with `GoogleGenerativeAIEmbeddings`
+- Persists to `database/vector_db/`
+
+Regenerate the store whenever the CSV changes.
+
+### Runtime search flow
+
+1. Extract optional filters (`extract_filters_from_query`).
+2. Perform similarity search (with metadata filter when available).
+3. Apply duration constraints client-side if necessary.
+4. Return the top-k matches with truncated descriptions.
+
+---
+
+## 🧠 Benchmarking & Quality
+
+The benchmarking script exercises predefined hiring scenarios and reports retrieval metrics.
+
+```powershell
+cd backend
+pytest tests  # runs health checks + evaluation unit tests
+
+python scripts/benchmark.py --api-url http://127.0.0.1:8000/recommend --k 3
+python scripts/benchmark.py --use-csv --csv-path assessment.csv --manual-selection
+```
+
+- **Metrics**: Recall@K, MAP@K (via `app.utils.evaluation`).
+- **Outputs**: Printed scores and optional JSON dump (`benchmark_results.json`).
+- **Hybrid logic**: Combines semantic results with heuristic fallbacks for multi-skill queries.
+
+For CI/CD integration, capture the JSON output and set thresholds on `mean_recall@k` / `map@k`.
+
+---
+
+## 🧪 Testing & Developer Workflows
+
+| Area | Command |
+|------|---------|
+| Backend unit tests | `pytest` (run inside `backend/` with env + vector DB ready) |
+| API smoke test | `curl http://127.0.0.1:8000/health` |
+| Frontend lint | `npm run lint` |
+| Frontend build check | `npm run build` |
+
+**Tip:** the API tests instantiate FastAPI synchronously; ensure your `.env` and vector DB are available or mock as needed.
+
+---
+
+## ☁️ Deployment
+
+- The repository ships with `backend/render.yaml` for deploying FastAPI on Render.com (free plan by default).
+- Point `DB_PATH` to persistent storage or layer in a remote vector DB if you recreate embeddings during deployment.
+- Build command installs requirements; start command boots the API (`python main.py --api`).
+- Deploy the frontend separately (e.g., Vercel/Netlify) and set `VITE_BACKEND_DOMAIN` to the deployed API.
+
+### Production Checklist
+
+- [ ] Regenerate vector store with latest catalog prior to deployment.
+- [ ] Store secrets securely (Render environment variables, Vercel project settings, etc.).
+- [ ] Enable HTTPS enforcement and CORS origins appropriate to your frontend domains (configure `app.core.config.CORS_ORIGINS`).
+- [ ] Implement request quotas or caching if expecting high traffic.
+
+---
+
+## 📚 Additional Documents
+
+- [`docs/SRS.md`](docs/SRS.md): Full Software Requirements Specification (original README content).
+- [`OPTIMIZATION.md`](OPTIMIZATION.md): Current and planned performance workstreams.
+- `Dev-Phase-outline.mermaid`: Historical feature roadmap (import into Mermaid Live Editor).
+
+---
+
+## 🤝 Contributing & Support
+
+1. Fork and create feature branches from `main`.
+2. Update documentation/tests relevant to your change.
+3. Run the lint/test commands above.
+4. Submit a PR with context, screenshots (if UI-facing), and benchmark deltas.
+
+For issues or feature requests, open a GitHub issue describing the scenario, observed behavior, and desired outcome.
+
+---
+
+## 🧾 License
+
+This project is provided for the SHL AI Intern Hiring 2025 assessment and is subject to SHL's internal usage guidelines. Verify licensing and redistribution terms before external use.
+
 

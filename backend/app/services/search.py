@@ -1,3 +1,5 @@
+import logging
+import os
 import re
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
@@ -5,15 +7,33 @@ from app.utils.helpers import extract_filters_from_query, extract_url_from_query
 from app.services.extraction import extract_job_description
 from app.services.generation import generate_search_query
 
+logger = logging.getLogger(__name__)
+
 def search_assessments(query, persist_directory="database/vector_db"):
     """Search for assessments based on the query."""
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    logger.debug("Creating Gemini embeddings for search", extra={
+        "model": "models/embedding-001",
+        "api_key_present": bool(os.getenv("GOOGLE_API_KEY"))
+    })
+    try:
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    except Exception as exc:
+        logger.exception("Failed to initialize Gemini embeddings", extra={
+            "model": "models/embedding-001"
+        })
+        raise
     
     # Load the vector store
-    vector_store = Chroma(
-        persist_directory=persist_directory,
-        embedding_function=embeddings
-    )
+    try:
+        vector_store = Chroma(
+            persist_directory=persist_directory,
+            embedding_function=embeddings
+        )
+    except Exception:
+        logger.exception("Failed to load Chroma vector store", extra={
+            "persist_directory": persist_directory
+        })
+        raise
     
     # Extract any time constraints from the query
     time_pattern = r'(\d+)\s*minutes'
@@ -26,6 +46,10 @@ def search_assessments(query, persist_directory="database/vector_db"):
     # First try with filters
     filters = extract_filters_from_query(query)
     if filters:
+        logger.debug("Applying filters to similarity search", extra={
+            "filters": filters,
+            "k": 5
+        })
         results = vector_store.similarity_search_with_score(
             query=query,
             k=5,
@@ -35,6 +59,9 @@ def search_assessments(query, persist_directory="database/vector_db"):
         filtered_results = [doc for doc, _ in results]
     else:
         # If no filters, perform standard search
+        logger.debug("Performing standard similarity search", extra={
+            "k": 5
+        })
         filtered_results = vector_store.similarity_search(
             query=query,
             k=5
@@ -47,6 +74,11 @@ def search_assessments(query, persist_directory="database/vector_db"):
             duration = doc.metadata.get('duration')
             if duration and float(duration) <= max_duration:
                 duration_filtered.append(doc)
+        logger.debug("Applying duration filter", extra={
+            "max_duration": max_duration,
+            "initial_results": len(filtered_results),
+            "filtered_results": len(duration_filtered)
+        })
         return duration_filtered if duration_filtered else filtered_results[:3]  # Return at least something
     
     return filtered_results

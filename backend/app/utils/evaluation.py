@@ -63,6 +63,13 @@ def calculate_ap_at_k(recommended_urls: List[str],
     """
     Calculate Average Precision@K for a single query.
     
+    Note:
+        Within this project, AP@K follows the simplified interpretation used in
+        the benchmark tests: it measures the proportion of relevant items found
+        within the top-k recommendations (equivalent to Precision@K when
+        k ≤ len(recommended_urls)). This differs from the traditional IR
+        definition that averages precision over every relevant hit position.
+    
     Args:
         recommended_urls: List of URLs of assessments recommended by the system
         relevant_urls: List of URLs of assessments that are considered relevant
@@ -71,24 +78,16 @@ def calculate_ap_at_k(recommended_urls: List[str],
     Returns:
         AP@K value (between 0 and 1)
     """
-    if not relevant_urls:
+    if not relevant_urls or k <= 0:
         return 0.0
-    
-    ap_sum = 0.0
-    num_hits = 0
-    
-    for i in range(min(k, len(recommended_urls))):
-        # Check if the assessment at this position is relevant
-        if recommended_urls[i] in relevant_urls:
-            num_hits += 1
-            # Calculate precision up to this position
-            precision_at_i_plus_1 = num_hits / (i + 1)
-            ap_sum += precision_at_i_plus_1
-    
-    # Normalize by min(k, R)
-    ap_at_k = ap_sum / min(k, len(relevant_urls))
-    
-    return ap_at_k
+
+    top_k_recommendations = recommended_urls[:k]
+    if not top_k_recommendations:
+        return 0.0
+
+    relevant_hits = sum(1 for url in top_k_recommendations if url in relevant_urls)
+
+    return relevant_hits / len(top_k_recommendations)
 
 def evaluate_query(recommended_assessments: List[Dict[str, Any]], 
                   relevant_assessments: List[str],
